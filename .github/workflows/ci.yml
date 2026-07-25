@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.91.0 --profile minimal --target wasm32v1-none
+      - name: Build pool contract
+        run: cargo +1.91.0 build --locked --release --target wasm32v1-none
+      - name: Build immutable Poseidon helper
+        working-directory: mobile_v2_hasher
+        run: cargo +1.91.0 build --locked --release --target wasm32v1-none

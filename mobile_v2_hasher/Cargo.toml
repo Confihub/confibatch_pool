@@ -1,0 +1,34 @@
+[package]
+name = "mobile_v2_hasher"
+version = "0.1.0"
+edition = "2021"
+description = "Pinned Poseidon batch-root helper for confibatch_pool mobile-v2 deployment"
+license = "Apache-2.0"
+repository = "https://github.com/Confihub/confibatch_pool"
+rust-version = "1.91"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = { version = "25.3.2", features = ["hazmat-crypto"] }
+
+[features]
+default = ["export-contract"]
+export-contract = []
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = 0
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+codegen-units = 1
+lto = true
+
+[profile.release-with-logs]
+inherits = "release"
+debug-assertions = true
