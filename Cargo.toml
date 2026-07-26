@@ -20,6 +20,10 @@ soroban-sdk = { version = "25.3.2", features = ["hazmat-crypto"] }
 # source instead of following a mutable branch.
 groth16_verifier = { git = "https://github.com/Confihub/groth16_verifier", rev = "39c58a3126d2da839915367637d3176f2d83d2df", default-features = false }
 
+[dev-dependencies]
+soroban-sdk = { version = "25.3.2", features = ["testutils"] }
+mobile_v2_hasher = { path = "mobile_v2_hasher" }
+
 [features]
 default = ["export-contract"]
 export-contract = []

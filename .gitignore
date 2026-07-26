@@ -8,7 +8,3 @@ artifacts/
 *.pem
 *.p12
 *.pfx
-
-# Local test sources and generated Soroban snapshots
-**/tests/
-**/test_snapshots/

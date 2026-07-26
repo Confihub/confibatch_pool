@@ -510,6 +510,21 @@ root(ordered_scms) -> depth-3 Poseidon root
 The pool validates the helper's contract identity, version, and hash ID during
 one-way v2 activation.
 
+## Tests
+
+The published suite contains 88 contract tests covering authorization,
+canonical field encodings, root/nullifier invariants, denomination and
+solvency controls, routed settlement, fee accounting, confidential LP paths,
+mobile-v2 dual-proof flows, atomic batch writing, rollback behavior, TTL
+keepers, freeze boundaries, and event wire formats.
+
+```bash
+cargo +1.91.0 test --locked
+```
+
+The committed Soroban snapshots make authorization and ledger-state changes
+reviewable alongside the assertions.
+
 ## Deployment and wiring order
 
 1. Build release Wasm from the guarded default verifier configuration.
