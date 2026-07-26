@@ -43,20 +43,32 @@ verifying-key SHA-256 distinguishes those instances.
 | Bound swap commit | `856b0a615f21f11c40923a0ebaebfa44112f1cf05dbc06542651ab2be281bbcb` | `8e5e41146962246f394501424b236506c4cc941475e27a830b1a6715d8a40095` | [`CAKDQEYW3AQFMZVWG3RA67UL4XAKJDSX47CIDR4PYPG3M6S57RXTDSS6`](https://stellar.expert/explorer/testnet/contract/CAKDQEYW3AQFMZVWG3RA67UL4XAKJDSX47CIDR4PYPG3M6S57RXTDSS6) |
 | Swap claim | `856b0a615f21f11c40923a0ebaebfa44112f1cf05dbc06542651ab2be281bbcb` | `d3ba3090430daaf0f9bc757af9dd514fc94c2ff0a7b52bd4e817501b4060bc75` | [`CBWCH7SIHY2J4QT67E6FHS3LQ7G62DEBKL7VHPX6TOF7H6KWDHGF3IAD`](https://stellar.expert/explorer/testnet/contract/CBWCH7SIHY2J4QT67E6FHS3LQ7G62DEBKL7VHPX6TOF7H6KWDHGF3IAD) |
 
-## Verify a contract's deployed WASM
+## Reproduce the deployment checks
 
-With Stellar CLI 25:
+The repository includes a verifier that checks the pool WASM, all 11 verifier
+WASMs, and all 11 verifier-key hashes against live Stellar testnet state. It
+requires Node.js and Stellar CLI 25. Pass any existing testnet account's public
+`G...` address; it is used only as the source for read-only `vk()` simulations,
+and the script does not submit a transaction.
 
 ```sh
-stellar contract fetch \
-  --id CARJLFBCWXXC2756U77XAIWIQPQCE56N4OQR7RIVUXVO3D3UFPO4WVDY \
-  --network testnet \
-  --out-file pool.wasm
-
-shasum -a 256 pool.wasm
+SOURCE_ACCOUNT="$(stellar keys address YOUR_TESTNET_IDENTITY)" \
+  node scripts/verify-deployments.mjs
 ```
 
-Replace the contract ID and output filename to verify any verifier row. The
-result must equal the row's WASM SHA-256. Verifying-key hashes are calculated
-from the canonical serialized value returned by each verifier's on-chain
-`vk()` read.
+### Exact verifier-key serialization
+
+For each verifier, the script calls the read-only `vk()` entrypoint and parses
+the JSON object printed by Stellar CLI. It then:
+
+1. recursively lowercases every string;
+2. preserves array order, including the order of `ic`;
+3. recursively sorts object keys lexicographically;
+4. serializes with `JSON.stringify` without whitespace;
+5. hashes those UTF-8 bytes with SHA-256.
+
+The resulting top-level field order is `alpha`, `beta`, `delta`, `gamma`, `ic`.
+There is no separate field or `ic`-length prefix: the JSON property names,
+punctuation, and array delimiters are part of the hashed bytes. For example,
+the live Deposit verifier serializes to 2,760 UTF-8 bytes and hashes to
+`5216265aeafc7967a04c77ffd814d3ce395833c7b39f67f0f71335053b7398fd`.
