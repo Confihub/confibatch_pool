@@ -15,13 +15,13 @@ crate-type = ["cdylib", "rlib"]
 doctest = false
 
 [dependencies]
-soroban-sdk = { version = "25.3.2", features = ["hazmat-crypto"] }
+soroban-sdk = { version = "27.0.5", features = ["hazmat-crypto"] }
 # The verifier is maintained in a separate repository. Pin the reviewed ABI/client
 # source instead of following a mutable branch.
 groth16_verifier = { git = "https://github.com/Confihub/groth16_verifier", rev = "39c58a3126d2da839915367637d3176f2d83d2df", default-features = false }
 
 [dev-dependencies]
-soroban-sdk = { version = "25.3.2", features = ["testutils"] }
+soroban-sdk = { version = "27.0.5", features = ["testutils"] }
 mobile_v2_hasher = { path = "mobile_v2_hasher" }
 
 [features]
