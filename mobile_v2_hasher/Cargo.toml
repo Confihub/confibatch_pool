@@ -13,7 +13,7 @@ crate-type = ["cdylib", "rlib"]
 doctest = false
 
 [dependencies]
-soroban-sdk = { version = "25.3.2", features = ["hazmat-crypto"] }
+soroban-sdk = { version = "28.0.0", features = ["hazmat-crypto"] }
 
 [features]
 default = ["export-contract"]
